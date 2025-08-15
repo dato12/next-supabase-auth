@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { useAuth } from '@/context/AuthContext';
+import {useRouter} from "next/navigation";
 
 export default function SignupPage() {
-    const { signUp } = useAuth();
+    const { signUp, user, loading } = useAuth();
+    const router = useRouter();
 
     // Form state
     const [name, setName] = useState('');
@@ -15,6 +17,12 @@ export default function SignupPage() {
     // Feedback state
     const [error, setError] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!loading && user) {
+            router.push('/'); // Already logged in → go home
+        }
+    }, [user, loading, router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -52,17 +60,17 @@ export default function SignupPage() {
             <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
                 <legend className="fieldset-legend">Sign Up</legend>
 
-                <label className="label">Name</label>
-                <input type="text" className="input" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)}/>
+                <label className="label" htmlFor="name">Name</label>
+                <input id="name" type="text" className="input" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)}/>
 
-                <label className="label">Email</label>
-                <input type="email" className="input" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                <label className="label" htmlFor="email">Email</label>
+                <input id="email" type="email" className="input" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
 
-                <label className="label">Password</label>
-                <input type="password" className="input" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                <label className="label" htmlFor="password">Password</label>
+                <input id="password" type="password" className="input" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
 
-                <label className="label">Repeat Password</label>
-                <input type="password" className="input" placeholder="Repeat Password" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)}/>
+                <label className="label" htmlFor="repeat_password">Repeat Password</label>
+                <input id="repeat_password" type="password" className="input" placeholder="Repeat Password" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)}/>
 
                 <button className="btn btn-neutral mt-4" onClick={(e) => handleSubmit(e)}>Sign Up</button>
 
